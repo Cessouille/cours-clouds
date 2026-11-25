@@ -18,7 +18,7 @@ resource "docker_container" "nginx" {
   count      = var.container_number
   privileged = var.privileged
   image      = docker_image.nginx.image_id
-  name       = var.container_number > 1 ? "${lab2}-${count.index + 1}" : "lab2"
+  name       = var.container_number > 1 ? "lab2-${count.index + 1}" : "lab2"
   memory     = var.container_memory
   ports {
     internal = 80
