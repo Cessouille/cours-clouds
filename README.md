@@ -11,12 +11,13 @@ Terraform labs for the cloud course.
 | [Luca Lab 2](luca-lab2) | uses a classmate's lab2 module, referenced from GitHub          |
 | [Lab 3](lab3)           | first steps on AWS: EC2 instance with SSH access                |
 | [Lab 3.5](lab3.5)       | lab 3 with datasources (AMI, subnet), outputs and an ec2 module |
+| [Lab 4](lab4)           | auto scaling group, S3 remote state and workspaces              |
 
 ## Prerequisites
 
 - [Terraform](https://developer.hashicorp.com/terraform/install)
 - Docker (lab1, lab2)
-- AWS account with an access key (lab3, lab3a)
+- AWS account with an access key (lab3, lab3.5, lab4)
 
 ## Usage
 
