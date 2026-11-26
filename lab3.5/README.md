@@ -14,7 +14,7 @@ Creates an EC2 instance in the existing main VPC (no new VPC) and sets up SSH ac
 `-- modules/ec2
     |-- main.tf             # datasources (AMI, subnet), key pair, security group, instance
     |-- variables.tf        # name, instance_type, subnet_id, public_key_path
-    `-- outputs.tf          # public_dns, public_ip, ami_id
+    `-- outputs.tf          # public_dns, public_ip
 ```
 
 ## Datasources
