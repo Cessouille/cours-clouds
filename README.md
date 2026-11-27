@@ -13,12 +13,13 @@ Terraform labs for the cloud course.
 | [Lab 3.5](lab3.5)       | lab 3 with datasources (AMI, subnet), outputs and an ec2 module |
 | [Lab 4](lab4)           | auto scaling group, S3 remote state and workspaces              |
 | [Lab 5](lab5)           | two ASGs behind a load balancer with path routing, in pairs     |
+| [Lab 6](lab6)           | private RDS database reached through a bastion host, in pairs   |
 
 ## Prerequisites
 
 - [Terraform](https://developer.hashicorp.com/terraform/install)
 - Docker (lab1, lab2)
-- AWS account with an access key (lab3, lab3.5, lab4, lab5)
+- AWS account with an access key (lab3, lab3.5, lab4, lab5, lab6)
 
 ## Usage
 

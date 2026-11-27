@@ -1,0 +1,33 @@
+#!/bin/bash
+# First boot of the bastion. Output: /var/log/cloud-init-output.log
+set -euxo pipefail
+
+# PostgreSQL 14 client (psql), from the Amazon Linux 2 extras.
+amazon-linux-extras enable postgresql14
+yum clean metadata
+yum install -y postgresql
+
+# The connection script. It reads the credentials from SSM at each run, with the
+# IAM role of the instance, so the password is never saved on the disk.
+cat > /usr/local/bin/connect-db.sh <<'SCRIPT'
+#!/bin/bash
+# Usage: connect-db.sh [psql arguments]
+set -euo pipefail
+
+get_param() {
+  aws ssm get-parameter --region "${region}" --name "${ssm_prefix}/$1" \
+    --with-decryption --query Parameter.Value --output text
+}
+
+endpoint="$(get_param endpoint)"
+db_name="$(get_param name)"
+db_user="$(get_param username)"
+PGPASSWORD="$(get_param password)"
+export PGPASSWORD
+
+# The endpoint may be stored as "host" or "host:port".
+# connect_timeout: fail instead of hanging when the security group blocks us.
+exec psql "host=$${endpoint%%:*} port=5432 dbname=$db_name user=$db_user sslmode=require connect_timeout=10" "$@"
+SCRIPT
+
+chmod 755 /usr/local/bin/connect-db.sh
