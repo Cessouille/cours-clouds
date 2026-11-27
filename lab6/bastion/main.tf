@@ -86,7 +86,6 @@ data "aws_caller_identity" "current" {}
 resource "aws_iam_role" "bastion" {
   name = "${var.name}-role"
 
-  # Trust policy: only EC2 can take this role
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -109,28 +108,6 @@ resource "aws_iam_role_policy" "read_db_parameters" {
       Effect   = "Allow"
       Action   = "ssm:GetParameter"
       Resource = "arn:aws:ssm:${var.region}:${data.aws_caller_identity.current.account_id}:parameter${local.ssm_prefix}/*"
-    }]
-  })
-}
-
-# Bonus: Session Manager. We do not attach AmazonSSMManagedInstanceCore, because
-# it also allows reading EVERY parameter of the account.
-resource "aws_iam_role_policy" "session_manager" {
-  name = "session-manager"
-  role = aws_iam_role.bastion.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Action = [
-        "ssm:UpdateInstanceInformation",
-        "ssmmessages:CreateControlChannel",
-        "ssmmessages:CreateDataChannel",
-        "ssmmessages:OpenControlChannel",
-        "ssmmessages:OpenDataChannel",
-      ]
-      Resource = "*"
     }]
   })
 }
@@ -174,11 +151,8 @@ resource "aws_instance" "bastion" {
     http_tokens = "required"
   }
 
-  # The permissions must exist before the SSM agent starts
-  depends_on = [
-    aws_iam_role_policy.read_db_parameters,
-    aws_iam_role_policy.session_manager,
-  ]
+  # The permission must exist before the instance is used
+  depends_on = [aws_iam_role_policy.read_db_parameters]
 
   tags = {
     Name = var.name

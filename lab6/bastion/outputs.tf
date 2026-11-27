@@ -18,11 +18,6 @@ output "rds_security_group_id" {
   value       = data.aws_security_group.rds.id
 }
 
-output "instance_id" {
-  description = "ID of the bastion, the target of Session Manager"
-  value       = one(aws_instance.bastion[*].id)
-}
-
 output "database" {
   description = "Database information read from the parameters of student 6 (no password)"
   value       = { for key, parameter in data.aws_ssm_parameter.db : key => nonsensitive(parameter.value) }
